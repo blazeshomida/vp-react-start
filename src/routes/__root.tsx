@@ -1,5 +1,6 @@
 import "#/styles.css";
 import { HeadContent, Link, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
+import type { ErrorComponentProps } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 export const Route = createRootRoute({
@@ -11,6 +12,7 @@ export const Route = createRootRoute({
     ],
   }),
   component: RootComponent,
+  errorComponent: ErrorBoundaryComponent,
   notFoundComponent: NotFoundComponent,
 });
 
@@ -42,6 +44,15 @@ function NotFoundComponent() {
       <h1>Not found</h1>
       <p>The page you requested does not exist.</p>
       <Link to="/">Go home</Link>
+    </main>
+  );
+}
+
+function ErrorBoundaryComponent({ error }: ErrorComponentProps) {
+  return (
+    <main>
+      <h1>Something went wrong</h1>
+      <p>{error.message}</p>
     </main>
   );
 }
