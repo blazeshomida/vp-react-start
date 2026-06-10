@@ -6,18 +6,30 @@ type TaskInput = { auto: true } | string;
 
 const ignoredDependencyPatterns = ["node_modules", ".vite", ".vite-temp"];
 
-// Automatic input tracking keeps task cache keys accurate without manually
-// listing every source/config file. The exclusions remove dependency, generated,
-// output, and tool-owned files that can be read and rewritten during a task.
-const taskInput = [
-  { auto: true },
-  ...ignoredDependencyPatterns.map((pattern) => `!**/${pattern}/**`),
-  ...outputPatterns.map((pattern) => `!**/${pattern}/**`),
-  ...generatedPatterns.map((pattern) => `!**/${pattern}`),
-] satisfies TaskInput[];
-
 // Environment variables that can affect client/server build output.
 const appEnv = ["NODE_ENV", "VITE_*"];
+
+function ignoredDirectoryInput(pattern: string): string[] {
+  return [`!**/${pattern}`, `!**/${pattern}/**`];
+}
+
+function ignoredFileInput(pattern: string): string {
+  return `!**/${pattern}`;
+}
+
+function outputDirectory(pattern: string): string[] {
+  return [pattern, `${pattern}/**`];
+}
+
+// Automatic input tracking keeps task cache keys accurate without manually
+// listing every source/config file. The exclusions remove dependency, generated,
+// output, and tool-owned paths that can be read and rewritten during a task.
+const taskInput = [
+  { auto: true },
+  ...ignoredDependencyPatterns.flatMap(ignoredDirectoryInput),
+  ...outputPatterns.flatMap(ignoredDirectoryInput),
+  ...generatedPatterns.map(ignoredFileInput),
+] satisfies TaskInput[];
 
 export const tasks = {
   "task:app:dev": {
@@ -56,7 +68,7 @@ export const tasks = {
     command: "vp build",
     env: appEnv,
     input: taskInput,
-    output: buildOutputPatterns.map((pattern) => `${pattern}/**`),
+    output: buildOutputPatterns.flatMap(outputDirectory),
   },
 
   "task:ready": {
