@@ -13,8 +13,8 @@ export const Route = createRootRoute({
     ],
   }),
   component: RootComponent,
-  errorComponent: ErrorBoundaryComponent,
-  notFoundComponent: NotFoundComponent,
+  errorComponent: RootErrorComponent,
+  notFoundComponent: RootNotFoundComponent,
 });
 
 function RootComponent() {
@@ -40,7 +40,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   );
 }
 
-function NotFoundComponent() {
+function RootNotFoundComponent() {
   return (
     <main>
       <h1>Not found</h1>
@@ -50,7 +50,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorBoundaryComponent({ error }: ErrorComponentProps) {
+function RootErrorComponent({ error }: ErrorComponentProps) {
   return (
     <main>
       <h1>Something went wrong</h1>
