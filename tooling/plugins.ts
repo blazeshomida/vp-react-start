@@ -1,6 +1,7 @@
+import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import viteReact from "@vitejs/plugin-react";
+import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
 import type { PluginOption } from "vite-plus";
 
@@ -23,6 +24,10 @@ export function getPlugins(mode: string) {
     ...getRuntimePlugins(mode),
     // React's Vite plugin must come after Start's Vite plugin.
     viteReact(),
+    // React Compiler must run through Babel after React's Vite plugin.
+    babel({
+      presets: [reactCompilerPreset()],
+    }),
     tailwindcss(),
   ] satisfies PluginOption[];
 }

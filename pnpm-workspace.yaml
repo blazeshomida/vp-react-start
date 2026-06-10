@@ -3,6 +3,7 @@ packages:
 
 catalog:
   "@base-ui/react": ^1.5.0
+  "@rolldown/plugin-babel": ^0.2.3
   "@tabler/icons-react": ^3.44.0
   "@tailwindcss/vite": ^4.3.0
   "@tanstack/react-router": ^1.170.15
@@ -12,6 +13,7 @@ catalog:
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
   "@vitejs/plugin-react": ^6.0.2
+  babel-plugin-react-compiler: ^1.0.0
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
   nitro: 3.0.260603-beta
