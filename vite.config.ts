@@ -130,6 +130,17 @@ export default defineConfig({
         cache: false,
       },
 
+      "task:app:fmt": {
+        command: "vp fmt",
+        cache: false,
+      },
+
+      "task:app:lint": {
+        command: "vp lint",
+        env: appEnv,
+        input: taskInput,
+      },
+
       "task:app:check": {
         command: "vp check",
         env: appEnv,

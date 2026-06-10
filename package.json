@@ -6,6 +6,8 @@
   "sideEffects": false,
   "scripts": {
     "dev": "vp run task:app:dev",
+    "fmt": "vp run task:app:fmt",
+    "lint": "vp run task:app:lint",
     "check": "vp run task:app:check",
     "test": "vp run task:app:test",
     "build": "vp run task:app:build",
