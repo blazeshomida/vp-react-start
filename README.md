@@ -2,7 +2,24 @@
 
 A React application starter built with [Vite+](https://viteplus.dev/guide/), [TanStack Start](https://tanstack.com/start/latest/docs/framework/react/build-from-scratch), [TanStack Router](https://tanstack.com/router/latest/docs/api/router/RouterOptionsType), [Nitro](https://nitro.build/docs), [Tailwind CSS](https://tailwindcss.com/docs/installation/using-vite), [React Compiler](https://react.dev/learn/react-compiler/installation), TypeScript, and Vitest.
 
-This template is intentionally minimal. It includes app infrastructure, routing, metadata helpers, CI, and tooling defaults without adding a styled example app.
+This template is intentionally minimal. It includes app infrastructure, routing, metadata helpers, CI, GitHub planning templates, and tooling defaults without adding a styled example app.
+
+## Template Setup Checklist
+
+When using this template for a real project:
+
+- [ ] Update the root `package.json` name.
+- [ ] Update `src/site.config.ts`.
+- [ ] Add or replace `public/og-image.png`.
+- [ ] Replace the home route placeholder.
+- [ ] Style or replace root error and not-found fallbacks.
+- [ ] Choose a deployment target and Nitro preset if needed.
+- [ ] Update GitHub workflow names or paths if the project layout changes.
+- [ ] Set up GitHub branch protection rules for `main` and require the Ready workflow before merging.
+- [ ] Update issue templates if the project needs different planning prompts.
+- [ ] Update this README for the real project.
+- [ ] Run `vpr fmt`.
+- [ ] Run `vpr ready`.
 
 ## Stack
 
@@ -19,11 +36,15 @@ This template is intentionally minimal. It includes app infrastructure, routing,
 - [Vite+](https://viteplus.dev/guide/)
 - [Vitest](https://vitest.dev/guide/)
 - [OXC](https://oxc.rs/docs/guide/usage/linter/config.html) linting and formatting through Vite+
+- [GitHub Actions](https://docs.github.com/en/actions)
+- [GitHub issue forms](https://docs.github.com/en/issues/tracking-your-work-with-issues/configuring-issues/configuring-issue-templates-for-your-repository)
 - pnpm catalogs
 
 ## Requirements
 
-Use the Node version supported by `package.json`. CI runs with Node 24, so Node 24 is the safest local default.
+Use the Node version supported by `package.json`.
+
+CI uses Node 24, so Node 24 is the safest local default.
 
 Install dependencies with Vite+:
 
@@ -31,9 +52,31 @@ Install dependencies with Vite+:
 vp install
 ```
 
+## Creating From This Template
+
+Use this repository as a GitHub template for new TanStack Start app projects.
+
+You can also create a project from this template with Vite+:
+
+```sh
+vp create github:blazeshomida/vp-react-start --directory my-app
+```
+
+After creating a new repository or project from the template, follow the setup checklist above and run:
+
+```sh
+vp install
+vpr fmt
+vpr ready
+```
+
+See the [Vite+ create guide](https://viteplus.dev/guide/create) for other template creation options.
+
 ## Commands
 
-Vite+ runs package scripts and configured tasks through `vp run`. The `vpr` command is the shorthand for `vp run`.
+Vite+ runs package scripts and configured tasks through `vp run`.
+
+The `vpr` command is the shorthand for `vp run`.
 
 ```sh
 # Start the dev server
@@ -58,7 +101,7 @@ vpr build
 vpr ready
 ```
 
-Use `vpr ready` before committing changes.
+Run `vpr fmt` before `vpr ready` when finalizing changes.
 
 ## Project Structure
 
@@ -86,15 +129,37 @@ tooling/
 .github/
   workflows/
     ready.yml
+  ISSUE_TEMPLATE/
+    bug_report.yml
+    config.yml
+    feature_request.yml
+    task.yml
   pull_request_template.md
 
+AGENTS.md
 components.json
 package.json
+README.md
 vite.config.ts
 tsconfig.json
 tsconfig.base.json
 pnpm-workspace.yaml
 ```
+
+## Application Layout
+
+This template separates app source, shared app helpers, and root tooling:
+
+- `src/routes` owns TanStack Router file routes.
+- `src/lib` owns small reusable app helpers.
+- `src/router.ts` owns TanStack Router creation and app router registration.
+- `src/site.config.ts` owns replaceable site metadata defaults.
+- `src/styles.css` owns global Tailwind CSS entry styles.
+- `tooling` owns root Vite+ formatting, linting, testing, plugin, task, and pattern configuration.
+- `.github` owns CI, pull request, and issue templates.
+- `AGENTS.md` owns repo-specific instructions for coding agents.
+
+The root `vite.config.ts` is the app tooling composition point.
 
 ## Routing
 
@@ -174,6 +239,80 @@ Relevant docs:
 
 - [TanStack Router: Document Head Management](https://tanstack.com/router/latest/docs/guide/document-head-management)
 
+## TypeScript
+
+The root TypeScript config is strict and app-oriented.
+
+The template uses:
+
+- `strict`
+- `exactOptionalPropertyTypes`
+- `noUncheckedIndexedAccess`
+- `noImplicitOverride`
+- `noPropertyAccessFromIndexSignature`
+- `moduleResolution: "bundler"`
+- `jsx: "react-jsx"`
+- `noEmit`
+
+Do not enable `verbatimModuleSyntax`. TanStack Start warns that it can cause server code to leak into client bundles.
+
+## File and Folder Conventions
+
+Prefer vertical structure over horizontal structure.
+
+Use the vertical codebase approach as the default reference:
+
+- [The Vertical Codebase](https://tkdodo.eu/blog/the-vertical-codebase)
+
+Group code by feature, domain, route concern, or workflow instead of by technical file type. Code that changes together should usually live together.
+
+Prefer this shape when the app grows:
+
+```txt
+src/
+  routes/
+    dashboard/
+      index.tsx
+      _components/
+      _queries.ts
+      _schema.ts
+```
+
+Avoid broad dumping grounds unless the app is genuinely tiny or the files are truly global:
+
+```txt
+src/
+  utils/
+  types/
+  constants/
+  services/
+```
+
+Use `_` prefixes for private implementation details inside a vertical.
+
+```txt
+src/
+  routes/
+    dashboard/
+      index.tsx
+      _components/
+      _queries.ts
+      _schema.ts
+      _types.ts
+```
+
+Rules:
+
+- `index.ts` or route files are the public boundary for a vertical.
+- `_*.ts` files are private to the vertical.
+- `_*/` folders are private implementation folders.
+- Do not import from another vertical's `_` files.
+- Promote code to shared only after at least two real call sites need it.
+- Shared code should have a clear name and ownership.
+- Avoid vague dumping grounds like `utils`.
+- Keep tests near the code they verify.
+- Keep types near the code that owns them unless they are part of the public API.
+
 ## Tooling
 
 `vite.config.ts` is the composition point. Focused config lives under `tooling/`:
@@ -236,6 +375,7 @@ Runtime plugins such as TanStack Start and Nitro are skipped in test mode. React
 Relevant docs:
 
 - [Vite+: Getting Started](https://viteplus.dev/guide/)
+- [Vite+: Create](https://viteplus.dev/guide/create)
 - [Vite+: Installing Dependencies](https://viteplus.dev/guide/install)
 - [Vite+: Run](https://viteplus.dev/guide/run)
 - [Vite+: Check](https://viteplus.dev/guide/check)
@@ -261,6 +401,15 @@ It uses Vite+ to:
 2. restore the Vite+ task cache and build output
 3. run `vp run ready`
 
+Cached paths:
+
+```txt
+node_modules/.vite
+node_modules/.vite-temp
+dist
+.output
+```
+
 Build output is restored with the task cache because generated output directories are excluded from task inputs.
 
 Local verification should use:
@@ -274,6 +423,32 @@ Relevant docs:
 - [Vite+: Continuous Integration](https://viteplus.dev/guide/ci)
 - [Vite+: Task Caching](https://viteplus.dev/guide/cache)
 
+## GitHub Templates
+
+This repository includes scoped GitHub templates for planning and review:
+
+- `.github/pull_request_template.md`
+- `.github/ISSUE_TEMPLATE/bug_report.yml`
+- `.github/ISSUE_TEMPLATE/feature_request.yml`
+- `.github/ISSUE_TEMPLATE/task.yml`
+
+Use these templates to keep issues and pull requests focused on one concern.
+
+Relevant docs:
+
+- [GitHub: Configuring issue templates](https://docs.github.com/en/issues/tracking-your-work-with-issues/configuring-issues/configuring-issue-templates-for-your-repository)
+- [GitHub: About issue and pull request templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests)
+
+## Agent Instructions
+
+Repository-specific agent instructions live in:
+
+```txt
+AGENTS.md
+```
+
+Use `AGENTS.md` to keep coding agents aligned with this template's boundaries, commands, verification expectations, and release workflow.
+
 ## Deployment
 
 Nitro is wired through `nitro/vite`.
@@ -285,14 +460,10 @@ Relevant docs:
 - [TanStack Start: Hosting](https://tanstack.com/start/latest/docs/framework/react/guide/hosting)
 - [Nitro: Introduction](https://nitro.build/docs)
 
-## Template Checklist
+## Handbook References
 
-When using this template for a real project:
+This template follows Blaze's engineering handbook:
 
-- update `package.json` name
-- update `src/site.config.ts`
-- add or replace `public/og-image.png`
-- replace the home route placeholder
-- style or replace root error and not-found fallbacks
-- choose a deployment target and Nitro preset if needed
-- update this README for the real project
+- [Handbook](https://github.com/blazeshomida/handbook)
+- [Standards](https://github.com/blazeshomida/handbook/tree/main/standards)
+- [Templates](https://github.com/blazeshomida/handbook/tree/main/templates)
