@@ -1,9 +1,10 @@
+import type { PluginOption } from "vite-plus";
+
 import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
-import type { PluginOption } from "vite-plus";
 
 function isTestMode(mode: string) {
   return mode === "test" || process.env["VITEST"] === "true";

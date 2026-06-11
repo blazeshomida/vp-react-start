@@ -6,7 +6,20 @@ export const fmt = {
   ignorePatterns: [...outputPatterns, ...generatedPatterns],
 
   sortImports: {
-    internalPattern: ["#/"],
+    customGroups: [
+      {
+        groupName: "project-alias",
+        elementNamePattern: ["#/**"],
+      },
+    ],
+
+    groups: [
+      "type-import",
+      ["value-builtin", "value-external"],
+      "project-alias",
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown",
+    ],
   },
 
   sortTailwindcss: {
