@@ -46,29 +46,37 @@ export const tasks = {
 
   "task:app:lint": {
     command: "vp lint",
-    env: appEnv,
-    input: taskInput,
+    cache: {
+      env: appEnv,
+      input: taskInput,
+    },
   },
 
   // Vite+ check already includes formatting/linting behavior, so ready can call
   // check instead of repeating fmt/lint as separate steps.
   "task:app:check": {
     command: "vp check",
-    env: appEnv,
-    input: taskInput,
+    cache: {
+      env: appEnv,
+      input: taskInput,
+    },
   },
 
   "task:app:test": {
     command: "vp test",
-    env: appEnv,
-    input: taskInput,
+    cache: {
+      env: appEnv,
+      input: taskInput,
+    },
   },
 
   "task:app:build": {
     command: "vp build",
-    env: appEnv,
-    input: taskInput,
-    output: buildOutputPatterns.flatMap(outputDirectory),
+    cache: {
+      env: appEnv,
+      input: taskInput,
+      output: buildOutputPatterns.flatMap(outputDirectory),
+    },
   },
 
   "task:ready": {
